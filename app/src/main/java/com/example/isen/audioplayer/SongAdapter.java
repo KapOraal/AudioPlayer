@@ -1,15 +1,14 @@
 package com.example.isen.audioplayer;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
-import java.util.ArrayList;
-
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * DD : referencer les chansons dans l'affichage de la liste
@@ -48,11 +47,8 @@ public class SongAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
-        // Changement
-        //public View getView(int position, View convertView, ViewGroup parent) {
-        //map to song layout
-        //LinearLayout songLay = (LinearLayout) songInf.inflate(R.layout.song, parent, false);
 
+        //map to song layout
         LinearLayout songLay = (LinearLayout) songInf.inflate(R.layout.song, viewGroup, false);
 
         //get title and artist views

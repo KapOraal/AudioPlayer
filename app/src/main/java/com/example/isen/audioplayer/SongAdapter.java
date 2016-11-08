@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * DD : referencer les chansons dans l'affichage de la liste
+ * DD : referencer les chansons dans l'affichage de la liste.
  */
 
 public class SongAdapter extends BaseAdapter {
@@ -19,15 +19,21 @@ public class SongAdapter extends BaseAdapter {
     private ArrayList<Song> songs;
     private LayoutInflater songInf;
 
+    /**
+     * Constructeur pour referencer les songs.
+     *
+     * @param c        the context
+     * @param theSongs la liste des songs
+     */
     public SongAdapter(Context c, ArrayList<Song> theSongs) {
         songs = theSongs;
-        /*
-        * permet de referencier sous forme de chaine de caractere
-        * le titre et l'artiste dans le TextView du layout-->song (mise en page principale)
-        * */
         songInf = LayoutInflater.from(c);
     }
 
+    /**
+     * Get la taille de la liste.
+     * @return la de la liste
+     */
     @Override
     public int getCount() {
         return songs.size();
@@ -35,16 +41,21 @@ public class SongAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int arg0) {
-        // TODO Auto-generated method stub
         return songs.get(arg0);
     }
 
     @Override
     public long getItemId(int arg0) {
-        // TODO Auto-generated method stub
         return songs.get(arg0).getID();
     }
 
+    /**
+     * Get le bon titre et le bon artiste de la musique sur la liste.
+     * @param position the position
+     * @param view the view
+     * @param viewGroup the viewGroup
+     * @return songLay the song Layout
+     */
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
 

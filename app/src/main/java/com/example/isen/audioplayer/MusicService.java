@@ -16,14 +16,12 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Random;
 
-// Additionnal import tuto 3
-
-
 
 /**
- * DD
+ * DD : Classe pour la lecture de la musique
  **/
 
+//Quelques interfaces pour la lecture de la musique
 public class MusicService extends Service implements
         MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener,
         MediaPlayer.OnCompletionListener {
@@ -31,13 +29,18 @@ public class MusicService extends Service implements
     private static final int NOTIFY_ID = 1;
     //variable for the inenr Binder class
     private final IBinder musicBind = new MusicBinder();
-    // Additionnal variable tuto 3
     private String songTitle = "";
-    //media player
+    /**
+     * The media player.
+     */
     private MediaPlayer player;
-    //song list
+    /**
+     * The song list.
+     */
     private ArrayList<Song> songs;
-    //current position
+    /**
+     * The current position.
+     */
     private int songPosn;
 
     private boolean shuffle = false;
@@ -85,10 +88,11 @@ public class MusicService extends Service implements
     }
 
     /**
-     *
+     * Initialiser le lecture de musique.
      */
     public void initMusicPlayer() {
         //set player properties
+        //continuer la lecture quand le mobile se met en veille
         player.setWakeMode(getApplicationContext(),
                 PowerManager.PARTIAL_WAKE_LOCK);
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -99,13 +103,15 @@ public class MusicService extends Service implements
     }
 
     /**
-     * @param theSongs
+     * Pass the list of songs from the Activity.
+     * @param theSongs la liste des musiques
      */
     public void setList(ArrayList<Song> theSongs) {
         songs = theSongs;
     }
 
     /**
+     *
      * @param mp
      */
     @Override
@@ -117,6 +123,7 @@ public class MusicService extends Service implements
     }
 
     /**
+     *
      * @param mp
      * @param what
      * @param extra
@@ -129,6 +136,7 @@ public class MusicService extends Service implements
     }
 
     /**
+     *
      * @param mp
      */
     @Override
@@ -155,10 +163,10 @@ public class MusicService extends Service implements
     }
 
     /**
-     *
+     * Jouer une musique.
      */
     public void playSong() {
-        //play a song
+        //reset the mediaPlayer
         player.reset();
 
         //get song
@@ -183,13 +191,13 @@ public class MusicService extends Service implements
     }
 
     /**
-     * @param songIndex
+     * Set the current song.
+     * @param songIndex the song index
      */
     public void setSong(int songIndex) {
         songPosn = songIndex;
     }
 
-    // Additionnal add method part 3
     public int getPosn() {
         return player.getCurrentPosition();
     }
@@ -220,6 +228,9 @@ public class MusicService extends Service implements
         playSong();
     }
 
+    /**
+     *
+     */
     public void playNext() {
         if (shuffle) {
             int newSong = songPosn;
@@ -234,13 +245,16 @@ public class MusicService extends Service implements
         playSong();
     }
 
+    /**
+     *
+     */
     public void setShuffle() {
         if (shuffle) shuffle = false;
         else shuffle = true;
     }
 
     /**
-     *
+     * Binder Instance : Interaction entre la classe Activity et Service.
      */
     public class MusicBinder extends Binder {
         MusicService getService() {

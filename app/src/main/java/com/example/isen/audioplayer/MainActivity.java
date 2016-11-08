@@ -16,30 +16,44 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.MediaController.MediaPlayerControl;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-// Additionnal import tuto 2
-// Additionnal import tuto 3
 
 public class MainActivity extends AppCompatActivity implements MediaPlayerControl {
 
+    /**
+     * Liste de chansons.
+     */
     private ArrayList<Song> songList;
+    /**
+     * Affichage de la liste des chansons.
+     */
     private ListView songView;
 
-    // Additionnal instance variables tuto 2
+    /**
+     * The music Service.
+     */
     private MusicService musicSrv;
     private Intent playIntent;
     private boolean musicBound = false;
+    /**
+     * The current song.
+     */
+    private Song currentSong;
 
-    // Additionnal instance variables tuto 3
+    /**
+     * The music controler.
+     */
     private MusicController controller;
 
     private boolean paused = false, playbackPaused = false;
+
     /**
-     *
+     * The music connection.
      */
     private ServiceConnection musicConnection = new ServiceConnection() {
 
@@ -67,7 +81,9 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
     }
 
     /**
-     * @param item
+     * Lance l'action quand l'utilisateur clique sur un element du menu (Aleatoire,Quitter,Partager).
+     *
+     * @param item the item
      * @return
      */
     @Override
@@ -83,13 +99,17 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
                 musicSrv = null;
                 System.exit(0);
                 break;
+            case R.id.buttonShareTextUrl:
+                shareTextUrl();
+                break;
+
 
         }
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     *
+     * Lance l'action qui quitte l'App.
      */
     @Override
     protected void onDestroy() {
@@ -113,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
 
         getSongList();
 
+        //Presentation par ordre alphabetique de titre
         Collections.sort(songList, new Comparator<Song>() {
             public int compare(Song a, Song b) {
                 return a.getTitle().compareTo(b.getTitle());
@@ -122,21 +143,19 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         SongAdapter songAdt = new SongAdapter(this, songList);
         songView.setAdapter(songAdt);
 
-        // Additionnal add tuto 3
         setController();
 
     }
 
-    // Additionnal add method part 2
-    //connect to the service
-
     /**
-     *
+     * Get information fichier audio.
      */
     public void getSongList() {
         //retrieve song info
+        //get URI des fichiers audios present dans la memoire.
         ContentResolver musicResolver = getContentResolver();
         Uri musicUri = android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        //Obtenir les informations sur les fichiers audios
         Cursor musicCursor = musicResolver.query(musicUri, null, null, null, null);
 
         if (musicCursor != null && musicCursor.moveToFirst()) {
@@ -158,8 +177,6 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         }
     }
 
-    // Additionnal add method part 2*
-
     /**
      *
      */
@@ -174,10 +191,14 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
     }
 
     /**
-     * @param view
+     * Jouer la musique sur laquelle on a cliqué.
+     *
+     * @param view the view
      */
     public void songPicked(View view) {
-        musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
+        int currentIndex = Integer.parseInt(view.getTag().toString());
+        currentSong = songList.get(currentIndex);
+        musicSrv.setSong(currentIndex);
         musicSrv.playSong();
         if (playbackPaused) {
             setController();
@@ -187,17 +208,28 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
     }
 
 
+    /**
+     * Start the music.
+     */
     @Override
     public void start() {
         musicSrv.go();
     }
 
+    /**
+     * Pause the music.
+     */
     @Override
     public void pause() {
         playbackPaused = true;
         musicSrv.pausePlayer();
     }
 
+    /**
+     * Get the duration of the music.
+     *
+     * @return the duration of the music
+     */
     @Override
     public int getDuration() {
         if (musicSrv != null && musicBound && musicSrv.isPng())
@@ -205,11 +237,19 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
         else return 0;
     }
 
+    /**
+     * Get the current position.
+     *
+     * @return index the position
+     */
     @Override
     public int getCurrentPosition() {
+        int index = 0;
         if (musicSrv != null && musicBound && musicSrv.isPng())
-            return musicSrv.getPosn();
-        else return 0;
+            index = musicSrv.getPosn();
+
+
+        return index;
     }
 
     @Override
@@ -312,4 +352,25 @@ public class MainActivity extends AppCompatActivity implements MediaPlayerContro
 
 
     }
+
+    // Method to share either text or URL.
+    private void shareTextUrl() {
+
+
+        if (currentSong != null) {
+            Intent share = new Intent(android.content.Intent.ACTION_SEND);
+            share.setType("text/plain");
+            share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+
+            // Add data to the intent, the receiving app will decide
+            share.putExtra(Intent.EXTRA_SUBJECT, "Sharing Song");
+            share.putExtra(Intent.EXTRA_TEXT, currentSong.getTitle() + " - " + currentSong.getArtist());
+
+            startActivity(Intent.createChooser(share, "Share link!"));
+        } else {
+            Toast.makeText(this, "Select....", Toast.LENGTH_LONG);
+        }
+    }
+
+
 }

@@ -2,10 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
     android:background="#FF330000"
+    android:orientation="vertical"
     tools:context=".MainActivity" >
 
+    <!---Presentation de la liste des chansons.> -->
     <ListView
         android:id="@+id/song_list"
         android:layout_width="fill_parent"

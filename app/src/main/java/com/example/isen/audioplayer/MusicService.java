@@ -104,6 +104,7 @@ public class MusicService extends Service implements
 
     /**
      * Pass the list of songs from the Activity.
+     *
      * @param theSongs la liste des musiques
      */
     public void setList(ArrayList<Song> theSongs) {
@@ -111,7 +112,6 @@ public class MusicService extends Service implements
     }
 
     /**
-     *
      * @param mp
      */
     @Override
@@ -123,7 +123,6 @@ public class MusicService extends Service implements
     }
 
     /**
-     *
      * @param mp
      * @param what
      * @param extra
@@ -136,7 +135,6 @@ public class MusicService extends Service implements
     }
 
     /**
-     *
      * @param mp
      */
     @Override
@@ -192,6 +190,7 @@ public class MusicService extends Service implements
 
     /**
      * Set the current song.
+     *
      * @param songIndex the song index
      */
     public void setSong(int songIndex) {
@@ -222,6 +221,9 @@ public class MusicService extends Service implements
         player.start();
     }
 
+    /**
+     * Play the previous tracks.
+     */
     public void playPrev() {
         songPosn--;
         if (songPosn < 0) songPosn = songs.size() - 1;
@@ -229,7 +231,7 @@ public class MusicService extends Service implements
     }
 
     /**
-     *
+     * Play the next tracks.
      */
     public void playNext() {
         if (shuffle) {
@@ -246,11 +248,14 @@ public class MusicService extends Service implements
     }
 
     /**
-     *
+     * Set the shuffle flag.
      */
     public void setShuffle() {
-        if (shuffle) shuffle = false;
-        else shuffle = true;
+        if (shuffle) {
+            shuffle = false;
+        } else {
+            shuffle = true;
+        }
     }
 
     /**
